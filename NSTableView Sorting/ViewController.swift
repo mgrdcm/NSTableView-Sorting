@@ -10,15 +10,22 @@ import Cocoa
 
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 
+  @IBOutlet var arrayController: NSArrayController!
+    
   @IBOutlet weak var tableView: NSTableView!
-  
-  var items: [String] = []
+
+  var items: [String] {
+    get {
+      return arrayController.arrangedObjects as! [String]
+    }
+  }
+
   let MyRowType = "MyRowType"
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    items = ["Macbook", "Mac Pro", "iMac"]
+    arrayController.add(contentsOf: ["Macbook", "Mac Pro", "iMac"])
     
     tableView.register(forDraggedTypes: [MyRowType, NSFilenamesPboardType])
   }
@@ -72,13 +79,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   func _moveItem(_ item: String, from: Int, to: Int) {
-    items.remove(at: from)
+    arrayController.remove(atArrangedObjectIndex: from)
     
     if(to > items.endIndex) {
-      items.append(item)
+      arrayController.addObject(item)
     }
     else {
-      items.insert(item, at: to)
+      arrayController.insert(item, atArrangedObjectIndex: to)
     }
     tableView.reloadData()
   }
